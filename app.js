@@ -5,11 +5,14 @@ import cors from "cors";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ Enable CORS
+// ✅ Bind to all interfaces (needed on Railway)
+const HOST = "0.0.0.0";
+
+// ✅ Enable CORS & JSON
 app.use(cors());
 app.use(express.json());
 
-// ✅ Health route (used by Railway)
+// ✅ Health route (Railway uses this for checking)
 app.get("/health", (req, res) => {
   res.status(200).send("OK");
 });
@@ -23,8 +26,6 @@ app.get("/", (req, res) => {
 app.get("/me", async (req, res) => {
   try {
     const response = await axios.get("https://catfact.ninja/fact", { timeout: 5000 });
-    const fact = response.data.fact;
-
     res.json({
       status: "success",
       user: {
@@ -33,7 +34,7 @@ app.get("/me", async (req, res) => {
         stack: "Node.js/Express"
       },
       timestamp: new Date().toISOString(),
-      fact
+      fact: response.data.fact
     });
   } catch (error) {
     console.error("Error fetching cat fact:", error.message);
@@ -45,12 +46,12 @@ app.get("/me", async (req, res) => {
   }
 });
 
-// ✅ Keep alive (prevent idle shutdown)
+// ✅ Keep-alive log (helps keep container warm)
 setInterval(() => {
   console.log("💓 Still alive at", new Date().toISOString());
 }, 300000); // every 5 minutes
 
-// ✅ Start server on 0.0.0.0
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+// ✅ Start server
+app.listen(PORT, HOST, () => {
+  console.log(`🚀 Server running on http://${HOST}:${PORT}`);
 });
