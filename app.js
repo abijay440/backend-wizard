@@ -49,7 +49,8 @@ app.get("/", (req, res) => {
   res.send("Backend Wizards - Stage 0 running 🪄");
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
 
