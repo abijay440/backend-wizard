@@ -44,10 +44,16 @@ app.get("/me", async (req, res) => {
   }
 });
 
-// ✅ Basic root route (optional for testing)
+// ✅ Basic root route 
 app.get("/", (req, res) => {
   res.send("Backend Wizards - Stage 0 running 🪄");
 });
+
+// health check
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
